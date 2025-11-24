@@ -1,0 +1,147 @@
+{
+    "name": "goose-analysis-vscode",
+    "displayName": "Goose Analysis",
+    "description": "AI-powered code analysis and explanation for TypeScript, JavaScript, Java, and Python",
+    "version": "1.0.0",
+    "publisher": "kuochunchang",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Machine Learning",
+        "Other"
+    ],
+    "keywords": [
+        "code-analysis",
+        "ai",
+        "openai",
+        "gemini",
+        "code-review",
+        "explanation"
+    ],
+    "activationEvents": [
+        "onLanguage:typescript",
+        "onLanguage:javascript",
+        "onLanguage:java",
+        "onLanguage:python"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "gooseAnalysis.openPanel",
+                "title": "Open Analysis Panel",
+                "category": "Goose Analysis",
+                "icon": "$(beaker)"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "gooseAnalysis.openPanel",
+                "key": "ctrl+shift+a",
+                "mac": "cmd+shift+a",
+                "when": "editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == java || editorLangId == python"
+            }
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "when": "editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == java || editorLangId == python",
+                    "command": "gooseAnalysis.openPanel",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "when": "editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == javascriptreact || editorLangId == java || editorLangId == python",
+                    "command": "gooseAnalysis.openPanel",
+                    "group": "gooseAnalysis@0"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "Goose Analysis",
+            "properties": {
+                "gooseAnalysis.aiProvider": {
+                    "type": "string",
+                    "default": "openai",
+                    "enum": [
+                        "openai",
+                        "gemini"
+                    ],
+                    "enumDescriptions": [
+                        "Use OpenAI or OpenAI-compatible APIs",
+                        "Use Google Gemini models"
+                    ],
+                    "description": "Select which AI provider powers code analysis"
+                },
+                "gooseAnalysis.openaiApiKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "OpenAI API Key (prefer using Secret Storage)"
+                },
+                "gooseAnalysis.analysisModel": {
+                    "type": "string",
+                    "default": "gpt-4o",
+                    "description": "OpenAI model to use for analysis"
+                },
+                "gooseAnalysis.useCustomApi": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use custom OpenAI-compatible API"
+                },
+                "gooseAnalysis.customApiUrl": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Custom API base URL"
+                },
+                "gooseAnalysis.customModelName": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Custom model name"
+                },
+                "gooseAnalysis.geminiApiKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Gemini API Key (prefer using Secret Storage)"
+                },
+                "gooseAnalysis.geminiModel": {
+                    "type": "string",
+                    "default": "gemini-2.5-flash",
+                    "enum": [
+                        "gemini-3-pro-preview",
+                        "gemini-2.5-pro",
+                        "gemini-2.5-flash",
+                        "gemini-2.5-flash-lite",
+                        "gemini-2.0-flash",
+                        "gemini-2.0-flash-lite"
+                    ],
+                    "description": "Gemini model to use for analysis"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "package": "vsce package",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "openai": "^4.20.0",
+        "@google/generative-ai": "^0.24.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/vscode": "^1.85.0",
+        "@vscode/vsce": "^2.22.0",
+        "typescript": "^5.3.2",
+        "vitest": "^1.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kuochunchang/goose-analysis-vscode.git"
+    },
+    "license": "MIT"
+}
