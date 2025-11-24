@@ -41,9 +41,9 @@ export interface OpenAIProviderConfig extends AIProviderConfig {
 /**
  * Gemini-specific configuration
  */
-export interface GeminiProviderConfig extends AIProviderConfig {
+export type GeminiProviderConfig = AIProviderConfig & {
   // Add Gemini-specific configuration here if needed
-}
+};
 
 /**
  * Provider type enum

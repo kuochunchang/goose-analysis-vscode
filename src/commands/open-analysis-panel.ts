@@ -19,7 +19,9 @@ export async function openAnalysisPanel(
   // Check if file is analyzable
   const document = await vscode.workspace.openTextDocument(targetFile);
   const language = document.languageId;
-  const { isSupportedLanguage, getSupportedLanguagesList } = await import('../utils/language-support.js');
+  const { isSupportedLanguage, getSupportedLanguagesList } = await import(
+    '../utils/language-support.js'
+  );
 
   if (!isSupportedLanguage(language)) {
     vscode.window.showWarningMessage(

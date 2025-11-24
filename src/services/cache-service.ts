@@ -21,10 +21,10 @@ export class CacheService {
    * @param hash - The current code hash
    * @returns Object with hasCache, hashMatched, and cached data
    */
-  async check(
+  check(
     filePath: string,
     hash: string
-  ): Promise<{ hasCache: boolean; hashMatched: boolean; insight: CachedInsight | null }> {
+  ): { hasCache: boolean; hashMatched: boolean; insight: CachedInsight | null } {
     // Try to find cache with exact hash match
     const exactKey = this.getCacheKey(filePath, hash);
     const exactCache = this.context.workspaceState.get<CachedInsight>(exactKey);
@@ -63,11 +63,7 @@ export class CacheService {
   /**
    * Save analysis result to cache
    */
-  async saveAnalysis(
-    filePath: string,
-    hash: string,
-    analysis: AnalysisResult
-  ): Promise<void> {
+  async saveAnalysis(filePath: string, hash: string, analysis: AnalysisResult): Promise<void> {
     const key = this.getCacheKey(filePath, hash);
     const existing = this.context.workspaceState.get<CachedInsight>(key);
 
@@ -114,9 +110,7 @@ export class CacheService {
     const filePrefix = `goose:insight:${filePath}:`;
     const currentKey = this.getCacheKey(filePath, currentHash);
 
-    const keysToDelete = allKeys.filter(
-      (key) => key.startsWith(filePrefix) && key !== currentKey
-    );
+    const keysToDelete = allKeys.filter((key) => key.startsWith(filePrefix) && key !== currentKey);
 
     for (const key of keysToDelete) {
       await this.context.workspaceState.update(key, undefined);

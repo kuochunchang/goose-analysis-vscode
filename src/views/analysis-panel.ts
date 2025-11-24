@@ -44,7 +44,7 @@ export class AnalysisPanel {
     this._cacheService = new CacheService(context);
 
     // Initialize analysis service
-    this._initializeAnalysisService();
+    void this._initializeAnalysisService();
 
     // Set initial HTML content
     this._updateWebview();
@@ -105,7 +105,7 @@ export class AnalysisPanel {
           return { provider: 'OpenAI', model };
         }
       }
-    } catch (error) {
+    } catch {
       return { provider: '', model: '' };
     }
   }
@@ -120,19 +120,25 @@ export class AnalysisPanel {
 
       if (providerType === 'gemini') {
         // Initialize Gemini provider
-        const geminiApiKey = await this._context.secrets.get('gemini-api-key') ||
-                             config.get<string>('geminiApiKey', '');
+        const geminiApiKey =
+          (await this._context.secrets.get('gemini-api-key')) ||
+          config.get<string>('geminiApiKey', '');
         const geminiModel = config.get<string>('geminiModel', 'gemini-2.5-flash');
 
         if (!geminiApiKey) {
-          vscode.window.showWarningMessage(
-            'Gemini API key not configured. Please set it in the extension settings or use the secret storage.',
-            'Configure'
-          ).then(selection => {
-            if (selection === 'Configure') {
-              vscode.commands.executeCommand('workbench.action.openSettings', 'gooseCodeReview.geminiApiKey');
-            }
-          });
+          vscode.window
+            .showWarningMessage(
+              'Gemini API key not configured. Please set it in the extension settings or use the secret storage.',
+              'Configure'
+            )
+            .then((selection) => {
+              if (selection === 'Configure') {
+                vscode.commands.executeCommand(
+                  'workbench.action.openSettings',
+                  'gooseCodeReview.geminiApiKey'
+                );
+              }
+            });
           return;
         }
 
@@ -148,8 +154,9 @@ export class AnalysisPanel {
         this._analysisService = new AnalysisService(provider);
       } else {
         // Initialize OpenAI provider
-        const openaiApiKey = await this._context.secrets.get('openai-api-key') ||
-                             config.get<string>('openaiApiKey', '');
+        const openaiApiKey =
+          (await this._context.secrets.get('openai-api-key')) ||
+          config.get<string>('openaiApiKey', '');
         const model = config.get<string>('analysisModel', 'gpt-4');
         const useCustomApi = config.get<boolean>('useCustomApi', false);
         const customApiUrl = config.get<string>('customApiUrl', '');
@@ -158,14 +165,19 @@ export class AnalysisPanel {
         // Check if using custom API
         if (useCustomApi) {
           if (!customApiUrl) {
-            vscode.window.showWarningMessage(
-              'Custom API is enabled but no URL is configured. Please set the custom API URL in the extension settings.',
-              'Configure'
-            ).then(selection => {
-              if (selection === 'Configure') {
-                vscode.commands.executeCommand('workbench.action.openSettings', 'gooseCodeReview.customApiUrl');
-              }
-            });
+            vscode.window
+              .showWarningMessage(
+                'Custom API is enabled but no URL is configured. Please set the custom API URL in the extension settings.',
+                'Configure'
+              )
+              .then((selection) => {
+                if (selection === 'Configure') {
+                  vscode.commands.executeCommand(
+                    'workbench.action.openSettings',
+                    'gooseCodeReview.customApiUrl'
+                  );
+                }
+              });
             return;
           }
 
@@ -186,14 +198,19 @@ export class AnalysisPanel {
         } else {
           // Using official OpenAI API
           if (!openaiApiKey) {
-            vscode.window.showWarningMessage(
-              'OpenAI API key not configured. Please set it in the extension settings or use the secret storage.',
-              'Configure'
-            ).then(selection => {
-              if (selection === 'Configure') {
-                vscode.commands.executeCommand('workbench.action.openSettings', 'gooseCodeReview.openaiApiKey');
-              }
-            });
+            vscode.window
+              .showWarningMessage(
+                'OpenAI API key not configured. Please set it in the extension settings or use the secret storage.',
+                'Configure'
+              )
+              .then((selection) => {
+                if (selection === 'Configure') {
+                  vscode.commands.executeCommand(
+                    'workbench.action.openSettings',
+                    'gooseCodeReview.openaiApiKey'
+                  );
+                }
+              });
             return;
           }
 
@@ -228,7 +245,7 @@ export class AnalysisPanel {
     if (AnalysisPanel.currentPanel) {
       AnalysisPanel.currentPanel._panel.reveal(column);
       if (file) {
-        AnalysisPanel.currentPanel.loadFile(file);
+        void AnalysisPanel.currentPanel.loadFile(file);
       }
       return AnalysisPanel.currentPanel;
     }
@@ -248,7 +265,7 @@ export class AnalysisPanel {
     AnalysisPanel.currentPanel = new AnalysisPanel(panel, extensionUri, context);
 
     if (file) {
-      AnalysisPanel.currentPanel.loadFile(file);
+      void AnalysisPanel.currentPanel.loadFile(file);
     }
 
     return AnalysisPanel.currentPanel;
@@ -299,9 +316,7 @@ export class AnalysisPanel {
       // Get current AI provider and model info (real-time from config)
       const { provider, model } = this._getCurrentProviderInfo();
       if (provider && model) {
-        vscode.window.showInformationMessage(
-          `🤖 Analyzing with ${provider}: ${model}`
-        );
+        vscode.window.showInformationMessage(`🤖 Analyzing with ${provider}: ${model}`);
       }
 
       // Show loading state
@@ -344,9 +359,7 @@ export class AnalysisPanel {
       // Get current AI provider and model info (real-time from config)
       const { provider, model } = this._getCurrentProviderInfo();
       if (provider && model) {
-        vscode.window.showInformationMessage(
-          `🤖 Explaining with ${provider}: ${model}`
-        );
+        vscode.window.showInformationMessage(`🤖 Explaining with ${provider}: ${model}`);
       }
 
       // Show loading state
@@ -962,7 +975,9 @@ export class AnalysisPanel {
       `;
     }
 
-    const issuesHtml = this._analysisResult.issues.map((issue, index) => `
+    const issuesHtml = this._analysisResult.issues
+      .map(
+        (issue, index) => `
       <div class="issue ${issue.severity}">
         <div class="issue-header" data-action="toggleIssue" data-index="${index}">
           <span class="severity-badge">${issue.severity}</span>
@@ -971,17 +986,23 @@ export class AnalysisPanel {
         </div>
         <div class="issue-details" id="issue-${index}">
           <p><strong>Suggestion:</strong> ${this._escapeHtml(issue.suggestion)}</p>
-          ${issue.codeExample ? `
+          ${
+            issue.codeExample
+              ? `
             <div class="code-example">
               <p><strong>Before:</strong></p>
               <pre>${this._escapeHtml(issue.codeExample.before)}</pre>
               <p><strong>After:</strong></p>
               <pre>${this._escapeHtml(issue.codeExample.after)}</pre>
             </div>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
 
     return `
       <div class="summary">
@@ -1007,13 +1028,13 @@ export class AnalysisPanel {
    */
   private _getComponentIcon(type: string): string {
     const iconMap: Record<string, string> = {
-      'class': 'symbol-class',
-      'function': 'symbol-method',
-      'module': 'symbol-namespace',
-      'interface': 'symbol-interface',
-      'constant': 'symbol-constant',
-      'type': 'symbol-type-parameter',
-      'variable': 'symbol-variable',
+      class: 'symbol-class',
+      function: 'symbol-method',
+      module: 'symbol-namespace',
+      interface: 'symbol-interface',
+      constant: 'symbol-constant',
+      type: 'symbol-type-parameter',
+      variable: 'symbol-variable',
     };
     return iconMap[type] || 'symbol-misc';
   }
@@ -1043,10 +1064,14 @@ export class AnalysisPanel {
         <p>${this._escapeHtml(result.overview)}</p>
       </div>
 
-      ${result.mainComponents && result.mainComponents.length > 0 ? `
+      ${
+        result.mainComponents && result.mainComponents.length > 0
+          ? `
         <div class="section">
           <h3><span class="codicon codicon-symbol-class"></span> Main Components (${result.mainComponents.length})</h3>
-          ${result.mainComponents.map(comp => `
+          ${result.mainComponents
+            .map(
+              (comp) => `
             <div class="component-card">
               <div class="component-header">
                 <span class="codicon codicon-${this._getComponentIcon(comp.type)} component-icon ${comp.type}"></span>
@@ -1057,15 +1082,23 @@ export class AnalysisPanel {
               <p>${this._escapeHtml(comp.description)}</p>
               ${comp.codeSnippet ? `<pre><code>${this._escapeHtml(comp.codeSnippet)}</code></pre>` : ''}
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
-      ${result.methodDependencies && result.methodDependencies.length > 0 ? `
+      ${
+        result.methodDependencies && result.methodDependencies.length > 0
+          ? `
         <div class="section">
           <h3><span class="codicon codicon-type-hierarchy"></span> Method Dependencies (${result.methodDependencies.length})</h3>
           <div class="dependency-list">
-            ${result.methodDependencies.map(dep => `
+            ${result.methodDependencies
+              .map(
+                (dep) => `
               <div class="dependency-item">
                 <span class="dependency-method-wrapper">
                   <span class="dependency-caller">${this._escapeHtml(dep.caller)}</span>
@@ -1078,15 +1111,23 @@ export class AnalysisPanel {
                 </span>
                 ${dep.description ? `<span class="dependency-description">${this._escapeHtml(dep.description)}</span>` : ''}
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
-      ${result.howItWorks && result.howItWorks.length > 0 ? `
+      ${
+        result.howItWorks && result.howItWorks.length > 0
+          ? `
         <div class="section">
           <h3><span class="codicon codicon-list-ordered"></span> How It Works</h3>
-          ${result.howItWorks.map(step => `
+          ${result.howItWorks
+            .map(
+              (step) => `
             <div class="component-card">
               <div class="component-header">
                 <span class="step-number">${step.step}</span>
@@ -1095,21 +1136,33 @@ export class AnalysisPanel {
               </div>
               <p>${this._escapeHtml(step.description)}</p>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
-      ${result.notableFeatures && result.notableFeatures.length > 0 ? `
+      ${
+        result.notableFeatures && result.notableFeatures.length > 0
+          ? `
         <div class="section">
           <h3><span class="codicon codicon-star"></span> Notable Features (${result.notableFeatures.length})</h3>
-          ${result.notableFeatures.map(feature => `
+          ${result.notableFeatures
+            .map(
+              (feature) => `
             <div class="feature-item">
               <span class="codicon codicon-check feature-icon"></span>
               <span>${this._escapeHtml(feature)}</span>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-      ` : ''}
+      `
+          : ''
+      }
 
       <button class="btn" data-action="runExplain">
         <span class="codicon codicon-refresh"></span>

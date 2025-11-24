@@ -56,8 +56,8 @@ export async function getAIProvider(context: vscode.ExtensionContext): Promise<I
   const providerType = config.get<AIProviderType>('aiProvider', 'openai');
 
   if (providerType === 'gemini') {
-    const geminiApiKey = await context.secrets.get('gemini-api-key') ||
-                         config.get<string>('geminiApiKey', '');
+    const geminiApiKey =
+      (await context.secrets.get('gemini-api-key')) || config.get<string>('geminiApiKey', '');
     const geminiModel = config.get<string>('geminiModel', 'gemini-pro');
 
     if (!geminiApiKey) {
@@ -74,8 +74,8 @@ export async function getAIProvider(context: vscode.ExtensionContext): Promise<I
     });
   } else {
     // Default to OpenAI
-    const openaiApiKey = await context.secrets.get('openai-api-key') ||
-                         config.get<string>('openaiApiKey', '');
+    const openaiApiKey =
+      (await context.secrets.get('openai-api-key')) || config.get<string>('openaiApiKey', '');
     const model = config.get<string>('analysisModel', 'gpt-4');
     const useCustomApi = config.get<boolean>('useCustomApi', false);
     const customApiUrl = config.get<string>('customApiUrl', '');
@@ -89,7 +89,7 @@ export async function getAIProvider(context: vscode.ExtensionContext): Promise<I
       throw new Error('Custom API URL is required when using custom API.');
     }
 
-    const modelToUse = useCustomApi ? (customModelName || model) : model;
+    const modelToUse = useCustomApi ? customModelName || model : model;
 
     return AIProviderFactory.create({
       provider: 'openai',
