@@ -1,5 +1,10 @@
 import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
-import type { AnalysisOptions, AnalysisResult, ExplainResult, Issue } from '../../types/analysis.js';
+import type {
+  AnalysisOptions,
+  AnalysisResult,
+  ExplainResult,
+  Issue,
+} from '../../types/analysis.js';
 import type { IAIProvider, GeminiProviderConfig } from './ai-provider.interface.js';
 
 /**
@@ -30,7 +35,8 @@ export class GeminiProvider implements IAIProvider {
    */
   async analyzeCode(code: string, options: AnalysisOptions = {}): Promise<AnalysisResult> {
     const prompt = this.buildAnalysisPrompt(code, options);
-    const systemInstruction = 'You are a professional code reviewer. Analyze code and provide detailed feedback in JSON format.';
+    const systemInstruction =
+      'You are a professional code reviewer. Analyze code and provide detailed feedback in JSON format.';
 
     try {
       const result = await this.generateContent({
@@ -57,7 +63,8 @@ export class GeminiProvider implements IAIProvider {
    */
   async explainCode(code: string, options: AnalysisOptions = {}): Promise<ExplainResult> {
     const prompt = this.buildExplainPrompt(code, options);
-    const systemInstruction = 'You are an expert code explainer. Provide clear, comprehensive explanations of code in structured JSON format.';
+    const systemInstruction =
+      'You are an expert code explainer. Provide clear, comprehensive explanations of code in structured JSON format.';
 
     try {
       const result = await this.generateContent({
@@ -341,9 +348,7 @@ Guidelines:
       'gemini-1.5',
     ];
 
-    return jsonModeSupportedModels.some((supportedModel) =>
-      this.model.startsWith(supportedModel)
-    );
+    return jsonModeSupportedModels.some((supportedModel) => this.model.startsWith(supportedModel));
   }
 
   /**

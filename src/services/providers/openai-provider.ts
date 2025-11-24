@@ -1,5 +1,10 @@
 import OpenAI from 'openai';
-import type { AnalysisOptions, AnalysisResult, ExplainResult, Issue } from '../../types/analysis.js';
+import type {
+  AnalysisOptions,
+  AnalysisResult,
+  ExplainResult,
+  Issue,
+} from '../../types/analysis.js';
 import type { IAIProvider, OpenAIProviderConfig } from './ai-provider.interface.js';
 
 /**

@@ -101,4 +101,10 @@ export interface CachedInsight {
   explain?: ExplainResult;
   timestamp: string;
 }
-export type SupportedLanguage = 'typescript' | 'javascript' | 'typescriptreact' | 'javascriptreact' | 'java' | 'python';
+export type SupportedLanguage =
+  | 'typescript'
+  | 'javascript'
+  | 'typescriptreact'
+  | 'javascriptreact'
+  | 'java'
+  | 'python';
